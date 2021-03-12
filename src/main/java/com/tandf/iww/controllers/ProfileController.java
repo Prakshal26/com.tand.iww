@@ -3,16 +3,15 @@ package com.tandf.iww.controllers;
 import com.tandf.iww.model.Profile;
 import com.tandf.iww.services.ProfileService;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.boot.web.servlet.error.ErrorController;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.ArrayList;
 import java.util.List;
 
 @RestController
-public class ProfileController  {
+@CrossOrigin(origins = "*")
+public class ProfileController implements ErrorController {
 
     ProfileService profileService;
 
@@ -21,29 +20,39 @@ public class ProfileController  {
         this.profileService = profileService;
     }
 
-    @GetMapping("/{id}")
-    public Profile findProfileByXmlId(@PathVariable("id") String id) {
+    @GetMapping("/profile")
+    public Profile findProfileByXmlId(@RequestParam("id") String id) {
 
-        return profileService.findByXmlId(id);
+        try {
+            return profileService.findByXmlId(id);
+        } catch (Exception e){
+            return null;
+        }
     }
 
     @GetMapping("/browse")
-    public List<String> findByLetter(@RequestParam("letter") String letter) {
+    public List<Profile> findByLetter(@RequestParam("letter") String letter) {
 
         List<Profile> profileList;
-
-        if (letter.equalsIgnoreCase("*")) {
-            profileList = profileService.findByIndexedNameNotLikeOrderByIndexedName();
-        } else {
-            profileList = profileService.findByIndexedNameStartsWithOrderByIndexedName(letter.toUpperCase());
+        try {
+            if (letter.isEmpty()) {
+                profileList = profileService.findByIndexedNameNotLikeOrderByIndexedName();
+            } else {
+                profileList = profileService.findByIndexedNameStartsWithOrderByIndexedName(letter.toUpperCase());
+            }
+            return profileList;
+        } catch (Exception e) {
+            return null;
         }
-
-        List <String> indexName = new ArrayList<>();
-
-        for (Profile profile : profileList) {
-            indexName.add(profile.getIndexedName());
-        }
-        return indexName;
     }
 
+    @RequestMapping("/error")
+    public String errorHandle(){
+        return "Invalid URL";
+    }
+
+    @Override
+    public String getErrorPath() {
+        return null;
+    }
 }

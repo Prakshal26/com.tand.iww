@@ -13,10 +13,8 @@ public interface ProfileRepository extends JpaRepository<Profile, Long> {
 
     Profile findByXmlId(String xmlId);
 
+    List<Profile> findByIndexedNameStartsWithOrderByIndexedName( String letter);
 
-   // @Query(value = "select p from Profile p where p.indexed_name similar to ':letter%|&:letter%' order by indexed_name")
-    List<Profile> findByIndexedNameStartsWithOrderByIndexedName(String letter);
-
-    @Query(value = "select * from ww_people where indexed_name not similar to '[A-Z]%|&[A-Z]%' order by indexed_name", nativeQuery = true)
+    @Query(value = "select * from ww_people where indexed_name not similar to '[A-Za-z]%' order by indexed_name", nativeQuery = true)
     List<Profile> findByIndexedNameNotLikeOrderByIndexedName();
 }
