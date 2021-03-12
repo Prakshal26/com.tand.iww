@@ -32,4 +32,9 @@ public class ProfileServiceImpl implements ProfileService {
     public List<Profile> findByIndexedNameNotLikeOrderByIndexedName() {
         return profileRepository.findByIndexedNameNotLikeOrderByIndexedName();
     }
+
+    @Override
+    public List<Profile> findExp(String exp1, String exp2) {
+        return profileRepository.findExp(exp1, exp2);
+    }
 }

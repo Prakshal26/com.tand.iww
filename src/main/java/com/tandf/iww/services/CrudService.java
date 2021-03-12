@@ -11,4 +11,7 @@ public interface CrudService<T,ID> {
     List<Profile> findByIndexedNameStartsWithOrderByIndexedName(String letter);
 
     List<Profile> findByIndexedNameNotLikeOrderByIndexedName();
+
+    List<Profile> findExp(String exp1, String exp2);
+
 }
