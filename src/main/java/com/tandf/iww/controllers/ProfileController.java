@@ -31,23 +31,17 @@ public class ProfileController implements ErrorController {
     }
 
     @GetMapping("/browse")
-    public List<String> findByLetter(@RequestParam("letter") String letter) {
+    public List<Profile> findByLetter(@RequestParam("letter") String letter) {
 
         List<Profile> profileList;
         try {
             if (letter.isEmpty()) {
                 profileList = profileService.findByIndexedNameNotLikeOrderByIndexedName();
             } else {
-              //  profileList = profileService.findByIndexedNameStartsWithOrderByIndexedName(letter.toUpperCase());
-                letter =letter.toUpperCase();
-                profileList = profileService.findExp(letter,"&"+letter);
+                profileList = profileService.findByPlainIndexedNameStartsWithOrderByPlainIndexedName(letter.toUpperCase());
+            }
 
-            }
-            List<String> indexNames = new ArrayList<>();
-            for (Profile profile : profileList) {
-                indexNames.add(profile.getIndexedName());
-            }
-            return indexNames;
+            return profileList;
         } catch (Exception e) {
             return null;
         }
